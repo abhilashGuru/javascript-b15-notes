@@ -4,18 +4,21 @@ var express = require('express');
 var http = require('http');
 var mongoose = require('mongoose');
 var bodyparser = require('body-parser');
-var noteRoutes = require('./routes/noteRoutes');
+var passport = require('passport');
 
 var app = express();
+app.set('port', process.env.PORT || 3000);
+app.set('secret', process.env.SECRET || 'changeme-changeme-changemeNOW!');
+
 app.use(bodyparser.json());
 app.use(express.static( __dirname + '/dist'));
-app.set('port', process.env.PORT || 3000);
+app.use(passport.initialize());
 
-app.get('/api/v1/notes', noteRoutes.collection);
-app.post('/api/v1/notes',  noteRoutes.create);
-app.get('/api/v1/notes/:id', noteRoutes.findById);
-app.put('/api/v1/notes/:id', noteRoutes.update);
-app.delete('/api/v1/notes/:id', noteRoutes.destroy);
+require('./lib/passport')(passport);
+
+require('./routes/noteRoutes')(app, passport);
+require('./routes/userRoutes')(app, passport);
+
 mongoose.connect('mongodb://localhost/notes-development');
 
 var server = http.createServer(app);

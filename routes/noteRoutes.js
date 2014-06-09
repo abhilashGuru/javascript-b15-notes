@@ -1,29 +1,33 @@
 'use strict';
 var Note = require('../models/Note');
 
-exports.collection = function(req, res) {
-  res.setHeader('Content-Type', 'application/json');
-  Note.find({}, function(err, notes) {
-    if(err) {
-      res.send(500, {error: err});
-      return false;
-    }
-    res.send(notes);
-  });
-};
+module.exports = function(app, passport) {
 
-exports.findById = function(req, res) {
-  res.setHeader('Content-Type', 'application/json');
-  Note.findOne({'_id': req.params.id}, function(err, note) {
-    if(err) {
-      res.send(500, {error: err});
-      return false;
-    }
-    res.send(note);
+  app.get('/api/v1/notes', function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    Note.find({}, function(err, notes) {
+      if(err) {
+        res.send(500, {error: err});
+        return false;
+      }
+      res.send(notes);
+    });
   });
-};
 
-exports.create = function(req, res) {
+  app.get('/api/v1/notes/:id',
+    passport.authenticate('basic', {session: false}),
+    function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    Note.findOne({'_id': req.params.id}, function(err, note) {
+      if(err) {
+        res.send(500, {error: err});
+        return false;
+      }
+      res.send(note);
+    });
+  });
+
+create = function(req, res) {
   res.setHeader('Content-Type', 'application/json');
   var note = new Note({noteBody: req.body.noteBody});
   note.save(function(err, resNote) {
@@ -35,7 +39,7 @@ exports.create = function(req, res) {
   });
 };
 
-exports.update = function(req, res) {
+update = function(req, res) {
   res.setHeader('Content-Type', 'application/json');
   var id = req.params.id;
   delete req.body._id;
@@ -49,7 +53,7 @@ exports.update = function(req, res) {
   });
 };
 
-exports.destroy = function(req, res) {
+destroy = function(req, res) {
   res.setHeader('Content-Type', 'application/json');
   Note.remove({'_id' : req.params.id}, function(err) {
     if(err) {
@@ -58,4 +62,5 @@ exports.destroy = function(req, res) {
     }
     res.send({'message' : 'success!'});
   });
+};
 };
