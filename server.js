@@ -1,16 +1,20 @@
 'use strict';
 
-var express = require('express');
-var http = require('http');
-var mongoose = require('mongoose');
+var express    = require('express');
+var http       = require('http');
+var mongoose   = require('mongoose');
 var bodyparser = require('body-parser');
 var noteRoutes = require('./routes/noteRoutes');
-var passport = require('passport');
+var passport   = require('passport');
 
 var app = express();
+
+var jwtauth = require('./lib/jwtAuth.js')(app);
+
 app.set('port', process.env.PORT || 3000);
 app.set('secret', process.env.SECRET || 'developmentsecret');
 app.set('apiBase', '/api/v1/');
+app.set('jwtTokenSecret', process.env.JWT_SECRET || 'changeMEchangeME');
 
 app.use(bodyparser.json());
 app.use(express.static( __dirname + '/dist'));
@@ -18,7 +22,7 @@ app.use(passport.initialize());
 
 require('./lib/passport')(passport);
 
-require('./routes/noteRoutes')(app, passport);
+require('./routes/noteRoutes')(app, passport, jwtauth.auth);
 require('./routes/userRoutes')(app, passport);
 mongoose.connect('mongodb://localhost/notes-development');
 

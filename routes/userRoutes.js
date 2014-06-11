@@ -27,7 +27,8 @@ module.exports = function(app, passport) {
           return false;
         }
 
-        res.send(resNewUser);
+        //WAS: res.send(resNewUser);
+        res.json({'jwt_token': resNewUser.createToken(app)});
       });
     });
   });
@@ -35,6 +36,7 @@ module.exports = function(app, passport) {
   app.get(baseUrl,
     passport.authenticate('basic', {session: false}),
     function(req, res) {
-      res.json(req.user);
+      //WAS: res.json(req.user);
+      res.json({'jwt_token': req.user.createToken(app)});
     });
 };
