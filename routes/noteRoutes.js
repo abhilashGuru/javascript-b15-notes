@@ -15,7 +15,7 @@ module.exports = function(app, passport, jwtauth) {
     });
   });
 
-  app.post(baseUrl, function(req, res) {
+  app.get(baseUrl + '/:id', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     Note.findOne({'_id': req.params.id}, function(err, note) {
       if(err) {
@@ -26,7 +26,7 @@ module.exports = function(app, passport, jwtauth) {
     });
   });
 
-  app.get(baseUrl + '/:id', function(req, res) {
+  app.post(baseUrl, function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     var note = new Note({noteBody: req.body.noteBody});
     note.save(function(err, resNote) {
