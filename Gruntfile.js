@@ -24,9 +24,9 @@ module.exports = function(grunt) {
       all: {
         expand: true,
         cwd: 'app/',
-        src: ['*.css', '*.html', '/images/**/*', '!Gruntfile.js'],
+        src: ['*.css', '*.html', 'views/*.html', '/images/**/*', '!Gruntfile.js'],
         dest: 'dist/',
-        flatten: true,
+        flatten: false,
         filter: 'isFile'
       },
     },
@@ -75,11 +75,12 @@ module.exports = function(grunt) {
     },
     watch: {
       scripts: {
-        files: ['app/js/**/*.js','test/**/*.js']
+        files: ['app/js/**/*.js','test/**/*.js', 'app/**/*.html'],
+        tasks: ['build']
       },
       express: {
-          files: ['server.js'],
-          tasks: ['browserify'],
+          files: ['server.js', 'routes/*.js', 'models/*.js'],
+          tasks: ['server'],
           options: {
             spawn: false
           }
@@ -102,7 +103,7 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.registerTask('serve', [ 'shell', 'build', 'express:dev','watch' ]);
+  grunt.registerTask('serve', [ 'build', 'express:dev','watch' ]);
   grunt.registerTask('server', 'serve');
   grunt.registerTask('test:acceptance',['express:dev','casper']);
   grunt.registerTask('test:api','simplemocha');

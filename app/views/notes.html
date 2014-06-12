@@ -1,0 +1,8 @@
+<div ng-controller="NotesController">
+  <h3>Notes</h3>
+  <a ng-href="#/notes/new">New Note</a>
+  <div ng-repeat="note in notes">
+    <p>{{note.noteBody}}</p>
+  </div>
+</div>
+
