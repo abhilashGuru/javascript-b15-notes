@@ -4,7 +4,7 @@ var Note = require('../models/Note');
 module.exports = function(app, passport, jwtauth) {
   var baseUrl = app.get('apiBase') + 'notes';
 
-  app.get(baseUrl, function(req, res) {
+  app.get(baseUrl, jwtauth, function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     Note.find({}, function(err, notes) {
       if(err) {

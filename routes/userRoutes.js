@@ -34,6 +34,6 @@ module.exports = function(app, passport) {
   app.get(baseUrl,
     passport.authenticate('basic', {session: false}),
     function(req, res) {
-      res.json({'jwt_toke' : req.user.createToken(app)});
+      res.json({'jwt' : req.user.createToken(app)});
     });
 };

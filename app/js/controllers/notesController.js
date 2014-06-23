@@ -1,7 +1,8 @@
 'use strict';
 
 module.exports = function(app) {
-  app.controller('NotesController', function($scope, $http) {
+  app.controller('NotesController', function($scope, $http, $cookies) {
+    $http.defaults.headers.common['jwt'] = $cookies.jwt;
     $http({
       method: 'GET',
       url: '/api/v1/notes'
